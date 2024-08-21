@@ -1,5 +1,6 @@
-import { useCallback, useState } from "react";
-import { Throttle } from "../utils/Throttle";
+import { useState } from "react";
+
+import { useRafThrottle } from "./hooks";
 
 const DELTA_MULTIPLIER = -0.01;
 const wrapperStyles = {
@@ -20,18 +21,13 @@ const itemStyles = {
 export const IncreaseElement = () => {
   const [scale, setScale] = useState(1);
 
-  const handleWheel = useCallback(
-    Throttle((event: React.WheelEvent) => {
-      console.log("wheel");
+  const handleWheel = useRafThrottle((event: React.WheelEvent) => {
+    console.log("wheel");
+    let newScale = scale + event.deltaY * DELTA_MULTIPLIER;
+    newScale = Math.min(Math.max(0.5, newScale), 4);
 
-      let newScale = scale + event.deltaY * DELTA_MULTIPLIER;
-
-      newScale = Math.min(Math.max(0.5, newScale), 4);
-
-      setScale(newScale);
-    }),
-    [scale]
-  );
+    setScale(newScale);
+  });
 
   return (
     <div style={wrapperStyles}>

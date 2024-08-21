@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { debounce } from "../utils/Debounce";
 import { storageAPI } from "../api/storage";
+import { useDebounce } from "./hooks";
 
 export default function SaveableTextInput() {
   const [text, setText] = useState("");
@@ -8,12 +9,9 @@ export default function SaveableTextInput() {
   const isTextEdited = useRef(false);
 
   // avoid unnecessary calls to api
-  const debouncer = useCallback(
-    debounce((text: string) => {
-      save(text);
-    }, 500),
-    []
-  );
+  const debouncer = useDebounce((text: string) => {
+    save(text);
+  }, 500);
 
   const handleUpdate = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     isTextEdited.current = true;
